@@ -39,7 +39,7 @@ namespace Newton_Interpolation
         private List<double> interpolatedY = new List<double>();
 
 
-        private double step = 30;
+        private double step = 10;
 
         
 
@@ -55,19 +55,18 @@ namespace Newton_Interpolation
             for (double i = -60; i < 60; i += step)
             {
                 X.Add(i);
-                
                 Y.Add(TestFunction(i));
+
+                function_dataGridView.Rows.Add(i, TestFunction(i));
             }
 
             for (double i = -50; i < 50; i+= 5)
             {
                 interpolatedX.Add(i);
                 interpolatedY.Add(Pn(i));
-            }
-            
-            functionPointTextBox.Text += "y(" + 33 + ") = " + TestFunction(33) + "\r\n";
 
-            interpolationPointTextBox.Text += Pn(33) + "\r\n";
+                interpolated_dataGridView.Rows.Add(i, Pn(i));
+            }
 
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             graphics = Graphics.FromImage(pictureBox1.Image);
@@ -137,7 +136,7 @@ namespace Newton_Interpolation
         {
             float initialX = -1500 * zoomCoeff;
             float initialY = -1500 * zoomCoeff;
-            float gridPitch = 2 * zoomCoeff;
+            float gridPitch = 10 * zoomCoeff;
 
             while (initialX <= 1500)    //рисование сетки по Х
             {
@@ -266,30 +265,6 @@ namespace Newton_Interpolation
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            //if (canMove != true)  //началось ли перетаскивание
-            //    return;
-
-            //graphics.Clear(Color.Transparent);  //очистить текущее изображение
-
-            //var startX = e.X;
-            //var startY = e.Y;
-
-            //graphics.TranslateTransform((startX - initialMouseX), (startY - initialMouseY));    //переместить начало координат для рисования
-
-            //drawFunction();    //перерисовать сетку и точки
-
-            //pictureBox1.Image = pictureBox1.Image;    //обновить изображение
-
-            canMove = false;
-        }
-
-        private void pictureBox1_MouseCaptureChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
-        {
             if (canMove != true)  //началось ли перетаскивание
                 return;
 
@@ -304,7 +279,75 @@ namespace Newton_Interpolation
 
             pictureBox1.Image = pictureBox1.Image;    //обновить изображение
 
+            canMove = false;
+        }
+
+        private void pictureBox1_MouseCaptureChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            //if (canMove != true)  //началось ли перетаскивание
+            //    return;
+
+            //graphics.Clear(Color.Transparent);  //очистить текущее изображение
+
+            //var startX = e.X;
+            //var startY = e.Y;
+
+            //graphics.TranslateTransform((startX - initialMouseX), (startY - initialMouseY));    //переместить начало координат для рисования
+
+            //drawFunction();    //перерисовать сетку и точки
+
+            //pictureBox1.Image = pictureBox1.Image;    //обновить изображение
+
             //canMove = false;
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            int x;
+            string tempStr = toolStripTextBox1.Text;
+
+
+            try
+            {
+                tempStr.Trim();
+                x = Convert.ToInt32(tempStr);
+            }
+            catch
+            {
+                MessageBox.Show("Введены неверные данные");
+                return;
+            }
+
+            toolStripTextBox2.Text = TestFunction(x).ToString();
+            toolStripTextBox3.Text = Pn(x).ToString();
+
+        }
+
+        private void toolStripLabel1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            graphics = Graphics.FromImage(pictureBox1.Image);
+
+            center = new PointF(pictureBox1.Width / 2, pictureBox1.Height / 2);
+
+            graphics.TranslateTransform(center.X, center.Y);
+
+            drawFunction();
+        }
+
+        private void Form1_ResizeEnd(object sender, EventArgs e)
+        {
+
         }
 
 
