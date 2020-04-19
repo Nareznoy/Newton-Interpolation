@@ -25,6 +25,10 @@ namespace Newton_Interpolation
 
         private bool canZoom;
         private float zoomCoeff = 1;
+        private bool canMove;
+
+        private int initialMouseX;
+        private int initialMouseY;
 
         PointF center;
 
@@ -251,6 +255,56 @@ namespace Newton_Interpolation
         private void pictureBox1_MouseLeave_1(object sender, EventArgs e)
         {
             canZoom = false;
+        }
+
+        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            canMove = true;
+            initialMouseX = e.X;
+            initialMouseY = e.Y;
+        }
+
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            //if (canMove != true)  //началось ли перетаскивание
+            //    return;
+
+            //graphics.Clear(Color.Transparent);  //очистить текущее изображение
+
+            //var startX = e.X;
+            //var startY = e.Y;
+
+            //graphics.TranslateTransform((startX - initialMouseX), (startY - initialMouseY));    //переместить начало координат для рисования
+
+            //drawFunction();    //перерисовать сетку и точки
+
+            //pictureBox1.Image = pictureBox1.Image;    //обновить изображение
+
+            canMove = false;
+        }
+
+        private void pictureBox1_MouseCaptureChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (canMove != true)  //началось ли перетаскивание
+                return;
+
+            graphics.Clear(Color.Transparent);  //очистить текущее изображение
+
+            var startX = e.X;
+            var startY = e.Y;
+
+            graphics.TranslateTransform((startX - initialMouseX), (startY - initialMouseY));    //переместить начало координат для рисования
+
+            drawFunction();    //перерисовать сетку и точки
+
+            pictureBox1.Image = pictureBox1.Image;    //обновить изображение
+
+            //canMove = false;
         }
 
 
