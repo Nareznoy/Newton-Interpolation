@@ -114,14 +114,14 @@
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel4,
-            this.interpolateStep_textBox,
             this.toolStripLabel5,
             this.interpolateInitialX_textBox,
             this.toolStripLabel6,
             this.interpolateFinalX_textBox,
-            this.Interpolate_Button,
-            this.toolStripSeparator1});
+            this.toolStripLabel4,
+            this.interpolateStep_textBox,
+            this.toolStripSeparator1,
+            this.Interpolate_Button});
             this.toolStrip1.Location = new System.Drawing.Point(0, 25);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1093, 25);
@@ -136,7 +136,6 @@
             // 
             // interpolateStep_textBox
             // 
-            this.interpolateStep_textBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.interpolateStep_textBox.Name = "interpolateStep_textBox";
             this.interpolateStep_textBox.Size = new System.Drawing.Size(100, 25);
             // 
@@ -148,7 +147,6 @@
             // 
             // interpolateInitialX_textBox
             // 
-            this.interpolateInitialX_textBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.interpolateInitialX_textBox.Name = "interpolateInitialX_textBox";
             this.interpolateInitialX_textBox.Size = new System.Drawing.Size(100, 25);
             // 
@@ -160,7 +158,6 @@
             // 
             // interpolateFinalX_textBox
             // 
-            this.interpolateFinalX_textBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.interpolateFinalX_textBox.Name = "interpolateFinalX_textBox";
             this.interpolateFinalX_textBox.Size = new System.Drawing.Size(100, 25);
             // 
@@ -242,14 +239,14 @@
             // toolStrip2
             // 
             this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1,
-            this.step_textBox,
             this.toolStripLabel2,
             this.initialX_textBox,
             this.toolStripLabel3,
             this.finalX_textBox,
-            this.CreateValueTable_Button,
-            this.toolStripSeparator2});
+            this.toolStripLabel1,
+            this.step_textBox,
+            this.toolStripSeparator2,
+            this.CreateValueTable_Button});
             this.toolStrip2.Location = new System.Drawing.Point(0, 0);
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.Size = new System.Drawing.Size(1093, 25);
@@ -264,7 +261,6 @@
             // 
             // step_textBox
             // 
-            this.step_textBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.step_textBox.Name = "step_textBox";
             this.step_textBox.Size = new System.Drawing.Size(100, 25);
             // 
@@ -276,7 +272,6 @@
             // 
             // initialX_textBox
             // 
-            this.initialX_textBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.initialX_textBox.Name = "initialX_textBox";
             this.initialX_textBox.Size = new System.Drawing.Size(100, 25);
             // 
@@ -288,7 +283,6 @@
             // 
             // finalX_textBox
             // 
-            this.finalX_textBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.finalX_textBox.Name = "finalX_textBox";
             this.finalX_textBox.Size = new System.Drawing.Size(100, 25);
             // 

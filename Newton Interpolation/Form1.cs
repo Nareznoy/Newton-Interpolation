@@ -17,8 +17,8 @@ namespace Newton_Interpolation
         Graphics graphics;
         private readonly Pen axisPen_ = new Pen(Color.Black, 2);  //пен для рисования сетки
         private readonly Pen gridPen_ = new Pen(Color.DarkGray, 1);   //для рисования осей
-        private readonly Pen curvePen_ = new Pen(Color.Green, 1);  //примерный вид функции
-        private readonly Pen interpolatedCurvePen_ = new Pen(Color.Red, 1);  //примерный вид функции
+        private readonly Pen curvePen_ = new Pen(Color.Green, 2);  //примерный вид функции
+        private readonly Pen interpolatedCurvePen_ = new Pen(Color.Red, 2);  //примерный вид функции
         
         private readonly Pen pointPen_ = new Pen(Color.Blue, 4); //точки
         private readonly Pen interpolatedPointPen_ = new Pen(Color.Red, 4); //точки
@@ -38,11 +38,11 @@ namespace Newton_Interpolation
         private List<double> interpolatedX = new List<double>();
         private List<double> interpolatedY = new List<double>();
 
-        private uint _step = 10;
+        private double _step;
         private double _initialX;
         private uint _final_X;
 
-        private uint _interpolateStep = 10;
+        private uint _interpolateStep;
         private double _interpolateInitialX;
         private uint _interpolateFinal_X;
 
@@ -52,23 +52,17 @@ namespace Newton_Interpolation
         {
             InitializeComponent();
             pictureBox1.MouseWheel += this_MouseWheel;
-
-            List<double> copy = new List<double>();
-
         }
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
-
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             graphics = Graphics.FromImage(pictureBox1.Image);
 
             center = new PointF(pictureBox1.Width / 2, pictureBox1.Height / 2);
 
             graphics.TranslateTransform(center.X, center.Y);
-
         }
 
 
@@ -84,13 +78,23 @@ namespace Newton_Interpolation
         }
 
 
+        private double TestFunction3(double x)
+        {
+            return Math.Cos(x);
+        }
+
+
         private double Pn(double x)
         {
             int n = X.Count;
             double result = Y[0];
+
+            int tempFactorial = 1;
+
             for (int i = 1; i < n; i++)
             {
-                double temp = Delta(i, i) / (Factorial(i) * Math.Pow(_interpolateStep, i));
+                tempFactorial *= i;
+                double temp = Delta(i, i) / (tempFactorial * Math.Pow(_step, i));
                 for (int k = 0; k < i; k++)
                 {
                     temp *= x - X[k];
@@ -98,6 +102,7 @@ namespace Newton_Interpolation
                 result += temp;
             }
 
+            tempFactorial = 1;
             return result;
 
         }
@@ -110,14 +115,6 @@ namespace Newton_Interpolation
                 return Y[i] - Y[i - 1];
             }
             return Delta(degree - 1, i) - Delta(degree - 1, i - 1);
-        }
-
-
-        static double Factorial(double value)
-        {
-            if (value == 0) return 1;
-            if (value == 1) return 1;
-            return value * Factorial(value - 1);
         }
 
 
@@ -157,6 +154,8 @@ namespace Newton_Interpolation
 
         private void drawFunction()
         {
+            graphics.Clear(Color.Transparent);
+
             buildGrid();
 
             PointF[] arrayToBuild = new PointF[X.Count];   //создание массива точек для построения
@@ -177,37 +176,40 @@ namespace Newton_Interpolation
 
             for (var i = 0; i < X.Count; i++) //рисование точек
             {
-                graphics.DrawLine(pointPen_, arrayToBuild[i].X, arrayToBuild[i].Y + 1, arrayToBuild[i].X,
-                    arrayToBuild[i].Y - 1);
-                graphics.DrawLine(pointPen_, arrayToBuild[i].X + 1, arrayToBuild[i].Y, arrayToBuild[i].X - 1,
+                graphics.DrawLine(pointPen_, arrayToBuild[i].X, arrayToBuild[i].Y + 3, arrayToBuild[i].X,
+                    arrayToBuild[i].Y - 3);
+                graphics.DrawLine(pointPen_, arrayToBuild[i].X + 3, arrayToBuild[i].Y, arrayToBuild[i].X - 3,
                     arrayToBuild[i].Y);
             }
 
 
-
-            PointF[] interpolatedArrayToBuild = new PointF[interpolatedX.Count];   //создание массива точек для построения
-
-            for (var i = 0; i < interpolatedX.Count; i++)
+            if (interpolatedX.Count != 0)
             {
-                var tempOne = new PointF
+                PointF[] interpolatedArrayToBuild = new PointF[interpolatedX.Count];   //создание массива точек для построения
+
+                for (var i = 0; i < interpolatedX.Count; i++)
                 {
-                    X = ToSingle(interpolatedX[i] * zoomCoeff),
-                    Y = -ToSingle(interpolatedY[i] * zoomCoeff)
-                };  //создание отдельной точки
-                //присваивание координат
+                    var tempOne = new PointF
+                    {
+                        X = ToSingle(interpolatedX[i] * zoomCoeff),
+                        Y = -ToSingle(interpolatedY[i] * zoomCoeff)
+                    };  //создание отдельной точки
+                        //присваивание координат
 
-                interpolatedArrayToBuild[i] = tempOne;  //добавление точки в массив точек
+                    interpolatedArrayToBuild[i] = tempOne;  //добавление точки в массив точек
+                }
+
+                graphics.DrawCurve(interpolatedCurvePen_, interpolatedArrayToBuild);  //примерный вид графика
+
+                for (var i = 0; i < interpolatedX.Count; i++) //рисование точек
+                {
+                    graphics.DrawLine(interpolatedPointPen_, interpolatedArrayToBuild[i].X, interpolatedArrayToBuild[i].Y + 3, interpolatedArrayToBuild[i].X,
+                        interpolatedArrayToBuild[i].Y - 3);
+                    graphics.DrawLine(interpolatedPointPen_, interpolatedArrayToBuild[i].X + 3, interpolatedArrayToBuild[i].Y, interpolatedArrayToBuild[i].X - 3,
+                        interpolatedArrayToBuild[i].Y);
+                }
             }
-
-            graphics.DrawCurve(interpolatedCurvePen_, interpolatedArrayToBuild);  //примерный вид графика
-
-            for (var i = 0; i < interpolatedX.Count; i++) //рисование точек
-            {
-                graphics.DrawLine(interpolatedPointPen_, interpolatedArrayToBuild[i].X, interpolatedArrayToBuild[i].Y + 1, interpolatedArrayToBuild[i].X,
-                    interpolatedArrayToBuild[i].Y - 1);
-                graphics.DrawLine(interpolatedPointPen_, interpolatedArrayToBuild[i].X + 1, interpolatedArrayToBuild[i].Y, interpolatedArrayToBuild[i].X - 1,
-                    interpolatedArrayToBuild[i].Y);
-            }
+            
 
             pictureBox1.Image = pictureBox1.Image;
         }
@@ -216,8 +218,6 @@ namespace Newton_Interpolation
         //функция приближения
         private void this_MouseWheel(object sender, MouseEventArgs e)
         {
-            graphics.Clear(Color.Transparent);    //очиста рисунка
-
             if (canZoom == false || X == null)
                 return;
 
@@ -225,15 +225,10 @@ namespace Newton_Interpolation
 
             if (e.Delta > 0)
             {
-                //graphics.ScaleTransform(1.2f, 1.2f);    //приближение
-
                 zoomCoeff *= (float)2;
-
             }
             else
             {
-                //graphics.ScaleTransform(0.8f, 0.8f); //отдаление
-
                 zoomCoeff /= (float)2;
             }
 
@@ -271,20 +266,6 @@ namespace Newton_Interpolation
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            //if (canMove != true)  //началось ли перетаскивание
-            //    return;
-
-            //graphics.Clear(Color.Transparent);  //очистить текущее изображение
-
-            //var startX = e.X;
-            //var startY = e.Y;
-
-            //graphics.TranslateTransform((startX - initialMouseX), (startY - initialMouseY));    //переместить начало координат для рисования
-
-            //drawFunction();    //перерисовать сетку и точки
-
-            //pictureBox1.Image = pictureBox1.Image;    //обновить изображение
-
             canMove = false;
         }
 
@@ -308,8 +289,6 @@ namespace Newton_Interpolation
             graphics.TranslateTransform((startX +  - initialMouseX), (startY - initialMouseY));    //переместить начало координат для рисования
 
             drawFunction();    //перерисовать сетку и точки
-
-            //pictureBox1.Image = pictureBox1.Image;    //обновить изображение
 
             initialMouseX = e.X;
             initialMouseY = e.Y;
@@ -344,9 +323,13 @@ namespace Newton_Interpolation
         private void CreateValueTable_Button_Click(object sender, EventArgs e)
         {
             function_dataGridView.Rows.Clear();
+            interpolated_dataGridView.Rows.Clear();
 
             X.Clear();
             Y.Clear();
+
+            interpolatedX.Clear();
+            interpolatedY.Clear();
 
             string tempStrStep = step_textBox.Text;
             string tempStrInitialX = initialX_textBox.Text;
@@ -377,33 +360,31 @@ namespace Newton_Interpolation
 
                 function_dataGridView.Rows.Add(i, TestFunction(i));
             }
+
+            drawFunction();
         }
 
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            function_dataGridView.Rows.Clear();
             interpolated_dataGridView.Rows.Clear();
-
-            X.Clear();
-            Y.Clear();
 
             interpolatedX.Clear();
             interpolatedY.Clear();
 
-            string tempStrStep = interpolateStep_textBox.Text;
-            string tempStrInitialX = interpolateInitialX_textBox.Text;
-            string tempStrFinalX = interpolateFinalX_textBox.Text;
+            string tempInterpolateStrStep = interpolateStep_textBox.Text;
+            string tempInterpolateStrInitialX = interpolateInitialX_textBox.Text;
+            string tempInterpolateStrFinalX = interpolateFinalX_textBox.Text;
 
             try
             {
-                tempStrStep.Trim();
-                tempStrInitialX.Trim();
-                tempStrFinalX.Trim();
+                tempInterpolateStrStep.Trim();
+                tempInterpolateStrInitialX.Trim();
+                tempInterpolateStrFinalX.Trim();
 
-                _interpolateStep = Convert.ToUInt32(tempStrStep);
-                _interpolateInitialX = Convert.ToDouble(tempStrInitialX);
-                _interpolateFinal_X = Convert.ToUInt32(tempStrFinalX);
+                _interpolateStep = Convert.ToUInt32(tempInterpolateStrStep);
+                _interpolateInitialX = Convert.ToDouble(tempInterpolateStrInitialX);
+                _interpolateFinal_X = Convert.ToUInt32(tempInterpolateStrFinalX);
             }
             catch
             {
@@ -411,23 +392,15 @@ namespace Newton_Interpolation
                 return;
             }
 
-
             for (double i = _interpolateInitialX; i <= _interpolateFinal_X; i += _interpolateStep)
-            {
-                X.Add(i);
-                Y.Add(TestFunction(i));
-
-
-                function_dataGridView.Rows.Add(i, TestFunction(i));
-            }
-
-            for (double i = -50; i < 50; i += 5)
             {
                 interpolatedX.Add(i);
                 interpolatedY.Add(Pn(i));
 
                 interpolated_dataGridView.Rows.Add(i, Pn(i));
             }
+
+            drawFunction();
         }
 
 
