@@ -38,8 +38,13 @@ namespace Newton_Interpolation
         private List<double> interpolatedX = new List<double>();
         private List<double> interpolatedY = new List<double>();
 
+        private uint _step = 10;
+        private double _initialX;
+        private uint _final_X;
 
-        private double step = 10;
+        private uint _interpolateStep = 10;
+        private double _interpolateInitialX;
+        private uint _interpolateFinal_X;
 
         
 
@@ -47,26 +52,15 @@ namespace Newton_Interpolation
         {
             InitializeComponent();
             pictureBox1.MouseWheel += this_MouseWheel;
-            
+
+            List<double> copy = new List<double>();
+
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            for (double i = -60; i < 60; i += step)
-            {
-                X.Add(i);
-                Y.Add(TestFunction(i));
-
-                function_dataGridView.Rows.Add(i, TestFunction(i));
-            }
-
-            for (double i = -50; i < 50; i+= 5)
-            {
-                interpolatedX.Add(i);
-                interpolatedY.Add(Pn(i));
-
-                interpolated_dataGridView.Rows.Add(i, Pn(i));
-            }
+            
 
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             graphics = Graphics.FromImage(pictureBox1.Image);
@@ -75,18 +69,20 @@ namespace Newton_Interpolation
 
             graphics.TranslateTransform(center.X, center.Y);
 
-            drawFunction();
         }
+
 
         private double TestFunction(double x)
         {
             return Math.Sin(0.47 * x + 0.2) + Math.Pow(x, 2);
         }
 
+
         private double TestFunction2(double x)
         {
             return Math.Sqrt(x) - Math.Cos(0.387 * x);
         }
+
 
         private double Pn(double x)
         {
@@ -94,7 +90,7 @@ namespace Newton_Interpolation
             double result = Y[0];
             for (int i = 1; i < n; i++)
             {
-                double temp = Delta(i, i) / (Factorial(i) * Math.Pow(step, i));
+                double temp = Delta(i, i) / (Factorial(i) * Math.Pow(_interpolateStep, i));
                 for (int k = 0; k < i; k++)
                 {
                     temp *= x - X[k];
@@ -106,6 +102,7 @@ namespace Newton_Interpolation
 
         }
 
+
         private double Delta(int degree, int i)
         {
             if (degree == 1)
@@ -115,6 +112,7 @@ namespace Newton_Interpolation
             return Delta(degree - 1, i) - Delta(degree - 1, i - 1);
         }
 
+
         static double Factorial(double value)
         {
             if (value == 0) return 1;
@@ -122,15 +120,18 @@ namespace Newton_Interpolation
             return value * Factorial(value - 1);
         }
 
+
         private void functionPointTextBox_TextChanged(object sender, EventArgs e)
         {
 
         }
 
+
         private void listView_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
+
 
         private void buildGrid()
         {
@@ -152,6 +153,7 @@ namespace Newton_Interpolation
                 initialY += gridPitch;
             }
         }
+
 
         private void drawFunction()
         {
@@ -210,6 +212,7 @@ namespace Newton_Interpolation
             pictureBox1.Image = pictureBox1.Image;
         }
 
+
         //функция приближения
         private void this_MouseWheel(object sender, MouseEventArgs e)
         {
@@ -237,24 +240,26 @@ namespace Newton_Interpolation
             drawFunction();
 
             pictureBox1.Image = pictureBox1.Image;
-
-            pictureBox1.Image = pictureBox1.Image;
         }
+
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
         }
 
+
         private void pictureBox1_MouseEnter_1(object sender, EventArgs e)
         {
             canZoom = true;
         }
 
+
         private void pictureBox1_MouseLeave_1(object sender, EventArgs e)
         {
             canZoom = false;
         }
+
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -263,31 +268,8 @@ namespace Newton_Interpolation
             initialMouseY = e.Y;
         }
 
+
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (canMove != true)  //началось ли перетаскивание
-                return;
-
-            graphics.Clear(Color.Transparent);  //очистить текущее изображение
-
-            var startX = e.X;
-            var startY = e.Y;
-
-            graphics.TranslateTransform((startX - initialMouseX), (startY - initialMouseY));    //переместить начало координат для рисования
-
-            drawFunction();    //перерисовать сетку и точки
-
-            pictureBox1.Image = pictureBox1.Image;    //обновить изображение
-
-            canMove = false;
-        }
-
-        private void pictureBox1_MouseCaptureChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             //if (canMove != true)  //началось ли перетаскивание
             //    return;
@@ -303,35 +285,42 @@ namespace Newton_Interpolation
 
             //pictureBox1.Image = pictureBox1.Image;    //обновить изображение
 
-            //canMove = false;
+            canMove = false;
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
+
+        private void pictureBox1_MouseCaptureChanged(object sender, EventArgs e)
         {
-            int x;
-            string tempStr = toolStripTextBox1.Text;
-
-
-            try
-            {
-                tempStr.Trim();
-                x = Convert.ToInt32(tempStr);
-            }
-            catch
-            {
-                MessageBox.Show("Введены неверные данные");
-                return;
-            }
-
-            toolStripTextBox2.Text = TestFunction(x).ToString();
-            toolStripTextBox3.Text = Pn(x).ToString();
-
+            
         }
+
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (canMove != true)  //началось ли перетаскивание
+                return;
+
+            graphics.Clear(Color.Transparent);  //очистить текущее изображение
+
+            var startX = e.X;
+            var startY = e.Y;
+
+            graphics.TranslateTransform((startX +  - initialMouseX), (startY - initialMouseY));    //переместить начало координат для рисования
+
+            drawFunction();    //перерисовать сетку и точки
+
+            //pictureBox1.Image = pictureBox1.Image;    //обновить изображение
+
+            initialMouseX = e.X;
+            initialMouseY = e.Y;
+        }
+
 
         private void toolStripLabel1_Click(object sender, EventArgs e)
         {
 
         }
+
 
         private void Form1_Resize(object sender, EventArgs e)
         {
@@ -345,13 +334,101 @@ namespace Newton_Interpolation
             drawFunction();
         }
 
+
         private void Form1_ResizeEnd(object sender, EventArgs e)
         {
 
         }
 
 
+        private void CreateValueTable_Button_Click(object sender, EventArgs e)
+        {
+            function_dataGridView.Rows.Clear();
 
+            X.Clear();
+            Y.Clear();
+
+            string tempStrStep = step_textBox.Text;
+            string tempStrInitialX = initialX_textBox.Text;
+            string tempStrFinalX = finalX_textBox.Text;
+
+            try
+            {
+                tempStrStep.Trim();
+                tempStrInitialX.Trim();
+                tempStrFinalX.Trim();
+
+                _step = Convert.ToUInt32(tempStrStep);
+                _initialX = Convert.ToDouble(tempStrInitialX);
+                _final_X = Convert.ToUInt32(tempStrFinalX);
+            }
+            catch
+            {
+                MessageBox.Show("Введены неверные данные");
+                return;
+            }
+
+
+            for (double i = _initialX; i <= _final_X; i += _step)
+            {
+                X.Add(i);
+                Y.Add(TestFunction(i));
+
+
+                function_dataGridView.Rows.Add(i, TestFunction(i));
+            }
+        }
+
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            function_dataGridView.Rows.Clear();
+            interpolated_dataGridView.Rows.Clear();
+
+            X.Clear();
+            Y.Clear();
+
+            interpolatedX.Clear();
+            interpolatedY.Clear();
+
+            string tempStrStep = interpolateStep_textBox.Text;
+            string tempStrInitialX = interpolateInitialX_textBox.Text;
+            string tempStrFinalX = interpolateFinalX_textBox.Text;
+
+            try
+            {
+                tempStrStep.Trim();
+                tempStrInitialX.Trim();
+                tempStrFinalX.Trim();
+
+                _interpolateStep = Convert.ToUInt32(tempStrStep);
+                _interpolateInitialX = Convert.ToDouble(tempStrInitialX);
+                _interpolateFinal_X = Convert.ToUInt32(tempStrFinalX);
+            }
+            catch
+            {
+                MessageBox.Show("Введены неверные данные");
+                return;
+            }
+
+
+            for (double i = _interpolateInitialX; i <= _interpolateFinal_X; i += _interpolateStep)
+            {
+                X.Add(i);
+                Y.Add(TestFunction(i));
+
+
+                function_dataGridView.Rows.Add(i, TestFunction(i));
+            }
+
+            for (double i = -50; i < 50; i += 5)
+            {
+                interpolatedX.Add(i);
+                interpolatedY.Add(Pn(i));
+
+                interpolated_dataGridView.Rows.Add(i, Pn(i));
+            }
+        }
 
 
 
