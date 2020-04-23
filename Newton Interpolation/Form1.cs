@@ -74,13 +74,7 @@ namespace Newton_Interpolation
 
         private double TestFunction2(double x)
         {
-            return Math.Sqrt(x) - Math.Cos(0.387 * x);
-        }
-
-
-        private double TestFunction3(double x)
-        {
-            return Math.Cos(x);
+            return x * Math.Log10 (x) - 1.2;
         }
 
 
@@ -111,22 +105,9 @@ namespace Newton_Interpolation
         private double Delta(int degree, int i)
         {
             if (degree == 1)
-            {
                 return Y[i] - Y[i - 1];
-            }
-            return Delta(degree - 1, i) - Delta(degree - 1, i - 1);
-        }
-
-
-        private void functionPointTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-
-        private void listView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+            else
+                return Delta(degree - 1, i) - Delta(degree - 1, i - 1);
         }
 
 
@@ -238,12 +219,6 @@ namespace Newton_Interpolation
         }
 
 
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
         private void pictureBox1_MouseEnter_1(object sender, EventArgs e)
         {
             canZoom = true;
@@ -270,12 +245,6 @@ namespace Newton_Interpolation
         }
 
 
-        private void pictureBox1_MouseCaptureChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             if (canMove != true)  //началось ли перетаскивание
@@ -295,12 +264,6 @@ namespace Newton_Interpolation
         }
 
 
-        private void toolStripLabel1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
         private void Form1_Resize(object sender, EventArgs e)
         {
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
@@ -311,12 +274,6 @@ namespace Newton_Interpolation
             graphics.TranslateTransform(center.X, center.Y);
 
             drawFunction();
-        }
-
-
-        private void Form1_ResizeEnd(object sender, EventArgs e)
-        {
-
         }
 
 
@@ -355,10 +312,10 @@ namespace Newton_Interpolation
             for (double i = _initialX; i <= _final_X; i += _step)
             {
                 X.Add(i);
-                Y.Add(TestFunction(i));
+                Y.Add(TestFunction2(i));
 
 
-                function_dataGridView.Rows.Add(i, TestFunction(i));
+                function_dataGridView.Rows.Add(i, TestFunction2(i));
             }
 
             drawFunction();
@@ -402,40 +359,5 @@ namespace Newton_Interpolation
 
             drawFunction();
         }
-
-
-
-
-        //private void drawGraphic()
-        //{
-        //    List<PointF> pointList = new List<PointF>();
-        //    int stepCount = X.Count;
-        //    pxStepX = pictureBox1.Width / stepCount;
-        //    pxStepY = pictureBox1.Height / stepCount;
-
-        //    // отрисовка шрихов на осях координат
-        //    for (int i = 0; i < stepCount; i++)
-        //    {
-        //        graphics.DrawLine(axisPen_, center.X - pxStepX * i, center.Y - 5, center.X - pxStepX * i, center.Y + 5);
-        //        graphics.DrawLine(axisPen_, center.X + pxStepX * i, center.Y - 5, center.X + pxStepX * i, center.Y + 5);
-
-        //        graphics.DrawLine(axisPen_, center.X - 5, center.Y - pxStepY * i, center.X + 5, center.Y - pxStepY * i);
-        //        graphics.DrawLine(axisPen_, center.X - 5, center.Y + pxStepY * i, center.X + 5, center.Y + pxStepY * i);
-        //    }
-
-        //    float pxInOneSinglePeace_X = pxStepX / (float)step;
-        //    float pxInOneSinglePeace_Y = pxStepY / (float)step;
-
-        //    float valueStepInOnePx_X = 1 / pxInOneSinglePeace_X;
-        //    float valueStepInOnePx_Y = 1 / pxInOneSinglePeace_Y;
-
-        //    for (float i = 0; i < pictureBox1.Width; i++)
-        //    {
-        //        pointList.Add(new PointF(i, (float)TestFunction2(valueStepInOnePx_X * i)));
-        //    }
-
-
-
-        //}
     }
 }
