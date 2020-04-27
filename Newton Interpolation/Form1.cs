@@ -354,5 +354,26 @@ namespace Newton_Interpolation
 
             drawFunction();
         }
+
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+            string tempInterpolateAt = interpolateAtTextBox.Text;
+
+            double interpolateAt;
+
+            try
+            {
+                tempInterpolateAt.Trim();
+
+                interpolateAt = Convert.ToDouble(tempInterpolateAt);
+            }
+            catch
+            {
+                MessageBox.Show("Введены неверные данные");
+                return;
+            }
+
+            interpolationValueTextBox.Text = Pn(interpolateAt).ToString();
+        }
     }
 }
