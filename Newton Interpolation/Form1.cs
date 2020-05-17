@@ -72,6 +72,10 @@ namespace Newton_Interpolation
             return x * Math.Log10 (x) - 1.2;
         }
 
+        private double TestFunction3(double x)
+        {
+            return Math.Cos(x) + (x / 5);
+        }
 
         private double Pn(double x)
         {
@@ -165,12 +169,28 @@ namespace Newton_Interpolation
 
                 for (var i = 0; i < _interpolated_X.Count; i++)
                 {
-                    var tempOne = new PointF
+                    PointF tempOne;
+
+                    if (Math.Abs(-ToSingle(_interpolated_Y[i] * _zoomCoeff)) < 1E+5)
                     {
-                        X = ToSingle(_interpolated_X[i] * _zoomCoeff),
-                        Y = -ToSingle(_interpolated_Y[i] * _zoomCoeff)
-                    };  //создание отдельной точки
-                        //присваивание координат
+                        tempOne = new PointF()
+                        {
+                            X = ToSingle(_interpolated_X[i] * _zoomCoeff),
+                            Y = -ToSingle(_interpolated_Y[i] * _zoomCoeff)
+                        };  //создание отдельной точки
+                            //присваивание координат
+                    }
+                    else
+                    {
+
+                        tempOne = new PointF()
+                        {
+                            X = ToSingle(_interpolated_X[i] * _zoomCoeff),
+                            Y = -ToSingle(0)
+                        };  //создание отдельной точки
+                            //присваивание координат
+                    }
+
 
                     interpolatedArrayToBuild[i] = tempOne;  //добавление точки в массив точек
                 }
@@ -307,10 +327,10 @@ namespace Newton_Interpolation
             for (double i = _initial_X; i <= _final_X; i += _step)
             {
                 _X.Add(i);
-                _Y.Add(TestFunction(i));
+                _Y.Add(TestFunction3(i));
 
 
-                function_dataGridView.Rows.Add(i, TestFunction(i));
+                function_dataGridView.Rows.Add(i, TestFunction3(i));
             }
 
             drawFunction();
